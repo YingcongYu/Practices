@@ -1,0 +1,38 @@
+sqoop import-all-tables \
+-m 1 \
+--connect jdbc:mysql://database.ascendingdc.com/retail_db \
+--username=student \
+--password=1234abcd \
+--compression-codec=snappy \
+--as-parquetfile \
+--warehouse-dir /user/ken/retail_db/parquet
+
+
+
+sqoop import-all-tables \
+-m 1 \
+--connect jdbc:mysql://database.ascendingdc.com/retail_db \
+--username=student \
+--password=1234abcd \
+--as-textfile \
+--fields-terminated-by '#' \
+--warehouse-dir /user/ken/retail_db/text
+
+
+
+sqoop import \
+-m 2 \
+--connect jdbc:mysql://database.ascendingdc.com/retail_db \
+--username=student \
+--password=1234abcd \
+--table order_items \
+--as-avrodatafile \
+--target-dir /user/ken/retail_db/avro/order_items
+
+
+
+hdfs dfs -get /user/ken/retail_db/parquet/order_items/1134ae9e-57ae-49d0-88e2-f6febf5dcbc2.parquet order_items_files/order_items.parquet
+
+hdfs dfs -get /user/ken/retail_db/avro/order_items/part-m-00000.avro order_items_files/order_items.avro
+
+hdfs dfs -get /user/ken/retail_db/text/order_items/part-m-00000 order_items_files/order_items.txt
